@@ -28,6 +28,17 @@ Your csv files should now all be located in the Data Folder
   - Regulations that the could incur fines on the company, E.g: FTC, SEC
   - E,T and M values to calculate vulnerability
 
+## Current Package Requirements
+- The model currently leverages pymc3 to get bayesian updates for μ and σ values of a lognormal distribution
+- This can cause issues with different versions of python, as the most recent update of pymc3 doesn't work well with python 3.12
+- version 1 of the model was developed with:
+  - Python 3.10.0
+  - Numpy 1.25.2
+  - Pandas 2.0.2
+  - Pymc3 3.11.5
+  - Scipy 1.13.1
+  - Matplotlib 3.8.0
+
 ***EXTRA INFORMATION***
   - These are currently subject to change as we move from ver1 of the finloss model
   - Working on coming up with formula for M value
