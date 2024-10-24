@@ -43,3 +43,7 @@ Your csv files should now all be located in the Data Folder
   - These are currently subject to change as we move from ver1 of the finloss model
   - Working on coming up with formula for M value
   - Integrate weights based on financial industry, as well as integrating insurance deductibles and security measures a company has in place
+    - use insurance deductibles and coverages to validate our predictions
+    - Build that validation into the model
+  - if insurance coverage provided is between our expected loss and upper bound then our model is accurately predicting loss
+  - 
