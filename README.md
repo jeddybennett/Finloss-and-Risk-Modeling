@@ -9,6 +9,7 @@ To generate the needed historical data that is currently being used in the finlo
 3) run python data_extractor.py
 
 That will now create a plethora of csv files
+
 4) Navigate out of Data_Organization into the main folder of the repository
 5) mkdir Data
 6) Navigate back into Data_Organization
