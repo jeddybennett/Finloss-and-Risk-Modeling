@@ -15,7 +15,7 @@ from p_value import get_p_value
     
 """Add weight based off the NAICS code of the company, and historical information of that industry"""
 
-def run_monte_carlo_simulations_pymc3(
+def run_monte_carlo_simulations(
     lambda_value, mu_samples, sigma_samples, company_data, range_tuples, probabilities, subcategory_proportions,
     num_sims=10000, num_years=5):
     total_losses = []
@@ -131,7 +131,7 @@ def model(plot=False):
     )
 
     # Calculate λ
-    lambda_value = calculate_lambda(p_value)
+    lambda_value = max(calculate_lambda(p_value), 0.1)
 
     # Run simulations
     num_simulations = 10000
@@ -149,7 +149,7 @@ def model(plot=False):
         response_costs_df, litigated_cases_df, fines_penalties_df, economic_loss_df
     )
 
-    total_losses, subcategory_losses_list = run_monte_carlo_simulations_pymc3(
+    total_losses, subcategory_losses_list = run_monte_carlo_simulations(
         lambda_value, mu_samples, sigma_samples, company_data, range_tuples, probabilities,
         subcategory_proportions, num_sims=num_simulations, num_years=num_years
     )

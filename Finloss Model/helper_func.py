@@ -74,25 +74,25 @@ def derive_E(incident_count):
         count = int(incident_count)
         return max(1, min(10, count))
     except:
-        return 5  # Default value
+        return 10.0 # Default value
 
 def derive_T(data_exposed):
     if isinstance(data_exposed, list):
         return len(data_exposed) * 50  # Example scaling
     else:
-        return 100  # Default value
+        return 500  # Default value
 
 def derive_M(budget):
     try:
         budget_value = parse_number(budget)
         if budget_value < 100_000:
-            return 3
+            return 4
         elif budget_value < 500_000:
-            return 5
-        else:
             return 7
+        else:
+            return 9
     except:
-        return 5
+        return 7
     
 
 ################################### Load Historical and JSON data ##################################
@@ -279,7 +279,7 @@ def calculate_subcategory_proportions(response_costs_df, litigated_cases_df, fin
     return subcategory_proportions
 
 
-def calculate_fines(regulations, num_records_lost, annual_revenue, weight=1):
+def calculate_fines(regulations, num_records_lost, annual_revenue, weight=0.1):
     fines = 0
 
     for regulation in regulations:
