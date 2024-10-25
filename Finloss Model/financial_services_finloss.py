@@ -230,15 +230,32 @@ def simulate_num_records_lost():
 
 # Define the determine_company_size function
 def determine_company_size(num_employees, current_revenue, prev_year_revenue1, prev_year_revenue2):
+
     average_revenue = (current_revenue + prev_year_revenue1 + prev_year_revenue2) / 3
-    if num_employees <= 10 and average_revenue <= 2_000_000:
-        return 'micro'
-    elif 11 <= num_employees <= 50 and 2_000_000 < average_revenue <= 10_000_000:
-        return 'small'
-    elif 51 <= num_employees <= 250 and 10_000_000 < average_revenue <= 50_000_000:
+
+    revenue_vals = np.array([prev_year_revenue2, prev_year_revenue1, current_revenue])
+
+    #check if value is a linear regression
+    predicted_revenue = np.polyfit(np.arange(3), revenue_vals, 1)[0] * 3 + revenue_vals[-1]
+
+    #use a linear regression model to predict the revenue for the next year
+    #use the predicted revenue to determine the company size
+
+    if num_employees < 0:
+        raise ValueError('Number of employees must be a positive integer.')
+    if any(revenue_vals < 0):
+        raise ValueError('Revenue values must be positive.')
+    
+    if 51 <= num_employees <= 250 or (10_000_000 < predicted_revenue <= 100_000_000):
         return 'medium'
+    elif 11 <= num_employees <= 50 or (250000 < predicted_revenue <= 27_000_000):
+        return 'small'
+    elif num_employees <= 10 or predicted_revenue <= 250000:
+        return 'micro'
     else:
         return 'large'
+    
+"""Add weight based off the NAICS code of the company, and historical information of that industry"""
 
 def run_monte_carlo_simulations_pymc3(
     lambda_value, mu_samples, sigma_samples, company_data, range_tuples, probabilities, subcategory_proportions,
@@ -341,6 +358,9 @@ def model(plot = False):
             'E': company_row['E'],  
             'T': company_row['T'], 
             'M': company_row['M'],
+
+            #determine how to assign a weight to the NAICS code
+            'NAICS': company_row['NAICS']
             # Additional fields as needed
         }
 
