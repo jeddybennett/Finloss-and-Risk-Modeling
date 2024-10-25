@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import lognorm
 import scipy.stats as stats
 import pymc3 as pm
 import warnings
@@ -46,15 +47,16 @@ def parse_number(number_str):
 
 def parse_revenue(revenue_str):
     revenue_str = revenue_str.replace('$', '').replace(',', '').strip()
-    if '-' in revenue_str:
+    if 'Less than' in revenue_str:
+        return 500_000  # Approximation for "Less than $1 million"
+    elif '-' in revenue_str:
         low_str, high_str = revenue_str.split('-')
         low = parse_number(low_str.strip())
         high = parse_number(high_str.strip())
-        average_revenue = (low + high) / 2
+        average_revenue = (low + high) / 2  # Or apply other adjustments as needed
         return average_revenue
     else:
         return parse_number(revenue_str)
-
 
 def parse_employee_count(employee_str):
     employee_str = employee_str.replace(',', '').strip()
@@ -216,17 +218,26 @@ def calculate_expected_loss():
 
     return all_loss_amounts
 
+def estimate_mu_sigma_mle(all_loss_amounts):
+    # Fit the lognormal distribution using MLE
+    shape, loc, scale = lognorm.fit(all_loss_amounts, floc=0)
+    sigma_mle = shape  # 'shape' parameter is sigma in lognorm
+    mu_mle = np.log(scale)
+    return mu_mle, sigma_mle
 
 def calculate_lognormal_params(num_samples):
     # Collect all loss amounts
     all_loss_amounts = calculate_expected_loss()
     
     # Perform Bayesian estimation
-    trace = bayesian_estimate_mu_sigma(all_loss_amounts, num_samples)
+    # trace = bayesian_estimate_mu_sigma(all_loss_amounts, num_samples)
     
-    # Extract posterior samples for mu and sigma
-    mu_samples = trace.posterior['mu'].values.flatten()
-    sigma_samples = trace.posterior['sigma'].values.flatten()
+    # # Extract posterior samples for mu and sigma
+    # mu_samples = trace.posterior['mu'].values.flatten()
+    # sigma_samples = trace.posterior['sigma'].values.flatten()
+    mu_mle, sigma_mle = estimate_mu_sigma_mle(all_loss_amounts)
+    mu_samples = np.full(num_samples, mu_mle)
+    sigma_samples = np.full(num_samples, sigma_mle)
     
     # Return the posterior samples
     return mu_samples, sigma_samples
@@ -238,8 +249,8 @@ def bayesian_estimate_mu_sigma(all_loss_amounts, num_samples):
     # Define the model
     with pm.Model() as model:
         # Priors for mu and sigma
-        mu_prior = pm.Normal('mu', mu=np.mean(log_loss_amounts), sigma=10)
-        sigma_prior = pm.HalfNormal('sigma', sigma=10)
+        mu_prior = pm.Normal('mu', mu=np.mean(log_loss_amounts), sigma=1)
+        sigma_prior = pm.HalfNormal('sigma', sigma=1)
         
         # Likelihood
         observed_data = pm.Normal('observed_data', mu=mu_prior, sigma=sigma_prior, observed=log_loss_amounts)
