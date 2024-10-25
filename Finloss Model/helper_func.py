@@ -66,6 +66,8 @@ def parse_employee_count(employee_str):
         high = int(high_str.strip())
         average_employees = (low + high) / 2
         return average_employees
+    elif '+' in employee_str:
+        return 5500
     else:
         return int(employee_str)
 
