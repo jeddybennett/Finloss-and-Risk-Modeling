@@ -49,11 +49,13 @@ def parse_revenue(revenue_str):
     revenue_str = revenue_str.replace('$', '').replace(',', '').strip()
     if 'Less than' in revenue_str:
         return 500_000  # Approximation for "Less than $1 million"
+    elif 'More than' in revenue_str:
+        return 1_500_000_000  # Approximation for "More than $1 billion"
     elif '-' in revenue_str:
         low_str, high_str = revenue_str.split('-')
         low = parse_number(low_str.strip())
         high = parse_number(high_str.strip())
-        average_revenue = (low + high) / 2  # Or apply other adjustments as needed
+        average_revenue = (low + high) / 2  
         return average_revenue
     else:
         return parse_number(revenue_str)

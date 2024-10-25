@@ -7,6 +7,7 @@ import warnings
 import logging
 import json
 from helper_func import *
+from V_calc.alt_v import v_calc
 # Suppress all warnings
 warnings.filterwarnings('ignore')
 logger = logging.getLogger('pymc3')
@@ -124,10 +125,7 @@ def model(plot=False):
 
     # Calculate p_value using the imported function
     p_value = get_p_value(
-        company_size=company_data['company_size'],
-        T=company_data['T'],
-        E=company_data['E'],
-        M=company_data['M']
+        company_size=company_data['company_size']
     )
 
     # Calculate λ

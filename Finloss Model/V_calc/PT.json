@@ -1,0 +1,6 @@
+[
+    {"CV": 10, "R": "critical"},
+    {"CV": 5, "R": "high"},
+    {"CV": 3, "R": "medium"},
+    {"CV": 8, "R": "low"}
+]
