@@ -38,23 +38,14 @@ class DataProcessor:
 
         return total / count if count > 0 else 0
 
-    def process_questionnaire(file_name):
-        """Process questionnaire JSON file to calculate total capped score."""
-        try:
-            with open(file_name, 'r') as file:
-                data = json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError) as e:
-            print(f"Error processing questionnaire file: {e}")
-            return 0
+    def process_questionnaire(data):
+        """Process questionnaire dictionary to calculate total capped score."""
 
         total_score = 0
 
-        for item in data:
-            if isinstance(item, dict):  # Ensure item is a dictionary
-                score = item.get('score')
-                if isinstance(score, (int, float)):
-                    total_score += max(Constants.MIN_SCORE, min(Constants.MAX_SCORE, score))
-
+        for key,score in data.items():
+            total_score += score
+                
         return min(total_score, Constants.MAX_SCORE)
 
     def process_assessment(file_names):
@@ -83,33 +74,40 @@ class DataProcessor:
 class ValueCalculator:
     """Class to calculate final value from processed scores."""
 
-    def calculate_value(a, b, Q, c, assessment, d, PT = None):
+    def calculate_value(Q, assessment = None, PT = None):
         """Calculate the combined value based on provided formula."""
         if PT:
-            return a * PT + b * Q + c * assessment + d
-        else:
-            PT = 0
-            return a * PT + b * Q + c * assessment + d
+            if assessment:
+                return 2.31 * PT + 0.20543 * Q - 0.1 * assessment + 1
+            else:
+                return 2.25 * PT + 0.3125 * Q
 
-def v_calc(company_size):
+        if Q and assessment:
+            return 0.75 * assessment + 0.78 * Q
+
+
+def v_calc(company_size, security_data):
     # File paths
-    cv_file_name = 'V_calc/PT.json'
-    questionnaire_file_name = 'V_calc/questionnaire.json'
+    #cv_file_name = 'V_calc/PT.json'
+    cv_file_name = None
+    questionnaire_file_name = security_data
     assessment_file_names = ['V_calc/NAssess.json', 'cis.json', 'sig.json']
 
-    # Coefficients for the calculation
-    a, b, c, d = 2.31, 0.20543, -0.1, 1
+    Q = DataProcessor.process_questionnaire(questionnaire_file_name)
 
     # Process data to obtain PT, Q, and assessment values
     if cv_file_name:
         PT = DataProcessor.process_data(cv_file_name)
     else:
         PT = None
-    Q = DataProcessor.process_questionnaire(questionnaire_file_name)
-    assessment_value = DataProcessor.process_assessment(assessment_file_names)
+    
+    if not assessment_file_names:
+        assessment_value = None
+    else:
+        assessment_value = DataProcessor.process_assessment(assessment_file_names)
 
     # Calculate final V value
-    V = ValueCalculator.calculate_value(a, b, Q, c, assessment_value, d, PT = PT)
+    V = ValueCalculator.calculate_value(Q, assessment = assessment_value, PT = PT)
     if company_size == 'micro':
         return V / 5
     elif company_size == 'small':

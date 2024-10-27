@@ -27,11 +27,11 @@ def convert_shorthand(value):
 def convert_to_serializable(obj):
     if isinstance(obj, np.ndarray):
         return obj.tolist()
-    if isinstance(obj, (np.float64, np.float32, np.float)):
+    if isinstance(obj, float):
         return float(obj)
-    if isinstance(obj, (np.int64, np.int32, np.int)):
+    if isinstance(obj, int):
         return int(obj)
-    if isinstance(obj, (np.bool_)):
+    if isinstance(obj, bool):
         return bool(obj)
     return obj
 
@@ -283,10 +283,10 @@ def calculate_subcategory_proportions(response_costs_df, litigated_cases_df, fin
 
     # Calculate proportions
     subcategory_totals = {
-        'Response Costs': response_cost_total,
-        'Litigated Cases': litigated_cases_total,
-        'Fines & Penalties': fines_penalties_total,
-        'Economic Loss': economic_loss_total
+        'Incident Response Costs': response_cost_total,
+        'Litigation Costs': litigated_cases_total,
+        'Regulatory Fines and Penalties': fines_penalties_total,
+        'Business Interruption Loss': economic_loss_total
     }
 
     subcategory_proportions = {k: v / total_loss for k, v in subcategory_totals.items()}

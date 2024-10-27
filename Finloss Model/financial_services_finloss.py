@@ -8,6 +8,7 @@ import logging
 import json
 from helper_func import *
 from V_calc.alt_v import v_calc
+from V_calc.parse_security import parse_security_data
 # Suppress all warnings
 warnings.filterwarnings('ignore')
 logger = logging.getLogger('pymc3')
@@ -88,6 +89,9 @@ def model(plot=False):
     data = load_questionnaire_data('questionnaire_output.json')
 
     business_data = data['businessQuestionnaire']
+    security_data = data['securityQuestionnaire']
+
+    security_scores = parse_security_data(security_data)
 
     # Parse and extract company data
     company_data = {
@@ -125,7 +129,7 @@ def model(plot=False):
 
     # Calculate p_value using the imported function
     p_value = get_p_value(
-        company_size=company_data['company_size']
+        company_size=company_data['company_size'], security_data = security_scores
     )
 
     # Calculate λ
