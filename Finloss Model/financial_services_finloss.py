@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
-import pymc3 as pm
+# import pymc3 as pm
 import warnings
 import logging
 import json
@@ -157,7 +157,7 @@ def model(plot=False):
     )
 
     # Analyze results
-    expected_total_loss = np.mean(total_losses)
+    expected_total_loss = round(np.mean(total_losses),2)
     lower_bound_total_loss = np.percentile(total_losses, 2.5)
     upper_bound_total_loss = np.percentile(total_losses, 97.5)
 
@@ -180,7 +180,7 @@ def model(plot=False):
 
     for category in subcategory_proportions.keys():
         expected_sub_loss = np.mean(subcategory_losses_list[category])
-        results['expected_subcategory_losses'][category] = expected_sub_loss
+        results['expected_subcategory_losses'][category] = round(expected_sub_loss,2)
     
     serializable_results = {}
     for key, value in results.items():
@@ -198,5 +198,5 @@ def model(plot=False):
     return serializable_results
 
 if __name__ == '__main__':
-    results = model()
+    results = model(True)
     print(results)

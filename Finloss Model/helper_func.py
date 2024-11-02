@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import lognorm
 import scipy.stats as stats
-import pymc3 as pm
+# import pymc3 as pm
 import warnings
 import logging
 import json
