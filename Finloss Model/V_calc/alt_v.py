@@ -86,25 +86,25 @@ class ValueCalculator:
             return 0.75 * assessment + 0.78 * Q
 
 
-def v_calc(company_size, security_data):
+def v_calc(company_size, security_data, assessment_data):
     # File paths
     #cv_file_name = 'V_calc/PT.json'
-    cv_file_name = None
+    
     questionnaire_file_name = security_data
-    assessment_file_names = ['V_calc/NAssess.json', 'cis.json', 'sig.json']
+
+    assessment_name = assessment_data['assessmentType']
+    score = assessment_data['assessmentScore']
 
     Q = DataProcessor.process_questionnaire(questionnaire_file_name)
 
     # Process data to obtain PT, Q, and assessment values
-    if cv_file_name:
-        PT = DataProcessor.process_data(cv_file_name)
-    else:
-        PT = None
     
-    if not assessment_file_names:
+    if assessment_name == 'PT':
+        PT = score
         assessment_value = None
     else:
-        assessment_value = DataProcessor.process_assessment(assessment_file_names)
+        assessment_value = score
+        PT = None
 
     # Calculate final V value
     V = ValueCalculator.calculate_value(Q, assessment = assessment_value, PT = PT)

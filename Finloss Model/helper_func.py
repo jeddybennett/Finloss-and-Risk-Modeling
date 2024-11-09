@@ -37,7 +37,9 @@ def convert_to_serializable(obj):
 
 def parse_number(number_str):
     number_str = number_str.replace('$', '').replace(',', '').strip()
-    if 'million' in number_str.lower():
+    if number_str == '':
+        return 1
+    elif 'million' in number_str.lower():
         number = float(number_str.lower().replace('million', '').strip()) * 1_000_000
     elif 'billion' in number_str.lower():
         number = float(number_str.lower().replace('billion', '').strip()) * 1_000_000_000

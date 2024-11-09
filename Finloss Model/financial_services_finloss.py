@@ -86,10 +86,11 @@ def run_monte_carlo_simulations(
   
 def model(plot=False):
     # Load data from JSON
-    data = load_questionnaire_data('questionnaire_output.json')
+    data = load_questionnaire_data('questionnaire_answers.json')
 
-    business_data = data['businessQuestionnaire']
-    security_data = data['securityQuestionnaire']
+    business_data = data['businessQuestions']
+    security_data = data['securityQuestions']
+    assessment_data = data["assessmentData"]
 
     security_scores = parse_security_data(security_data)
 
@@ -129,7 +130,7 @@ def model(plot=False):
 
     # Calculate p_value using the imported function
     p_value = get_p_value(
-        company_size=company_data['company_size'], security_data = security_scores
+        company_size=company_data['company_size'], security_data = security_scores, assessment_data=assessment_data
     )
 
     # Calculate λ

@@ -37,15 +37,15 @@ def calculate_p_value_medium(V):
     return p / 100  # Convert percentage to decimal
 
 
-def get_p_value(company_size, security_data):
+def get_p_value(company_size, security_data, assessment_data):
     if company_size.lower() == 'micro':
-        V = alt_v.v_calc('micro', security_data)
+        V = alt_v.v_calc('micro', security_data, assessment_data)
         p_value = calculate_p_value_micro(V)
     elif company_size.lower() == 'small':
-        V = alt_v.v_calc('small', security_data)
+        V = alt_v.v_calc('small', security_data, assessment_data)
         p_value = calculate_p_value_small(V)
     elif company_size.lower() == 'medium':
-        V = alt_v.v_calc('medium', security_data)
+        V = alt_v.v_calc('medium', security_data, assessment_data)
         p_value = calculate_p_value_medium(V)
     else:
         raise ValueError("Invalid company size. Must be 'micro', 'small', or 'medium'.")
